@@ -55,7 +55,7 @@ module.exports = {
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((thought) => 
+      .then((thought) =>
         !thought
           ? res.status(404).json({ message: "No thought with this id!" })
           : res.json(thought)
@@ -72,7 +72,7 @@ module.exports = {
           : User.findOneAndUpdate(
               { thoughts: req.params.thoughtId },
               { $pull: { thoughts: req.params.thoughtId } },
-              { new: true }
+              { runValidators: true, new: true }
             )
       )
       .then((user) =>
@@ -89,25 +89,39 @@ module.exports = {
   // POST to create a reaction stored in a single thought's reactions array field
   createThoughtReaction(req, res) {
     Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId},
-        { $addToSet: { reactions: req.params.body } },
-        { new: true }
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
     )
-    // Create Reaction
-    //Push that reaction to req.params.thoughtId
-    .then((thought) =>
+      // Create Reaction
+      //Push that reaction to req.params.thoughtId
+      .then((thought) =>
         !thought
-          ? res
-              .status(404)
-              .json({ message: "Reaction created but no thought with this id!" })
+          ? res.status(404).json({
+              message: "Reaction created but no thought with this id!",
+            })
           : res.json({ message: "Reaction successfully created!" })
       )
       .catch((err) => res.status(500).json(err));
-
   },
 
   // DELETE to pull and remove a reaction by the reaction's reactionId value
   deleteReaction(req, res) {
-
-  }
+    Thought.findOneAndDelete(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: req.body.reactionId } },
+      { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({
+              message: "Reaction deleted but no thought with this id!",
+            })
+          : res.json({ message: "Reaction successfully deleted!" })
+      )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
 };
