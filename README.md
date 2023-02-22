@@ -14,6 +14,7 @@ Click [HERE](https://drive.google.com/file/d/1defoxPiyOZAgM3VugRPqkJu-hIMPrhHS/v
     
 - [Description](#description)
 - [Installation](#installation)
+- [Technologies](#technologies)
 - [User Story](#usage)
 - [Acceptance Criteria](#acceptance-criteria)
 - [License](#license)
@@ -31,6 +32,11 @@ npm run seed
 npm start
 
 ```
+
+## Technologies
+- MongoDB
+- Mongoose
+- Express.js
 
 
 ## User Story
